@@ -1,0 +1,38 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  node-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      # 啟動 server（用假金鑰即可，因為我們只打靜態頁）
+      - name: Start app
+        run: |
+          PORT=3000 OPENAI_API_KEY=dummy node src/server.js &
+          echo $! > app.pid
+      - name: Wait for server
+        run: npx --yes wait-on http://127.0.0.1:3000
+
+      - name: Smoke test
+        run: |
+          curl -sSf http://127.0.0.1:3000 | head -n 5
+      
+      - name: Stop app
+        if: always()
+        run: kill -9 $(cat app.pid) || true
