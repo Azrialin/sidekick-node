@@ -15,17 +15,47 @@
     <div id="out"></div>
     <script>
       const out = document.getElementById("out");
-      document.getElementById("go").onclick = async () => {
-        const message = document.getElementById("q").value;
+      const q = document.getElementById("q");
+      const go = document.getElementById("go");
+
+      // 前端維護對話脈絡（只存 user/assistant）
+      const history = [];
+
+      async function ask() {
+        const message = q.value.trim();
+        if (!message) return;
+        q.value = "";
+        go.disabled = true;
+
         out.insertAdjacentHTML("beforeend", `<div class="msg">你：${message}</div>`);
+
+        // 把目前的 history 一起送到後端
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message })
+          body: JSON.stringify({ message, history }),
         });
         const data = await res.json();
-        out.insertAdjacentHTML("beforeend", `<div class="msg ai">AI：${data.answer}<br><small>tool: ${data.usedTool||"none"}</small></div>`);
-      };
+
+        out.insertAdjacentHTML(
+          "beforeend",
+          `<div class="msg ai">AI：${data.answer}<div class="dim">tool: ${
+            (data.usedTools && data.usedTools.length) ? data.usedTools.join(", ") : "none"
+          }</div></div>`
+        );
+
+        // 把本輪對話加入 history，下一輪可接續指代
+        history.push({ role: "user", content: message });
+        history.push({ role: "assistant", content: data.answer });
+
+        go.disabled = false;
+        q.focus();
+      }
+
+      go.onclick = ask;
+      q.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") ask();
+      });
     </script>
   </body>
 </html>
