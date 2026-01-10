@@ -5,6 +5,13 @@ import { OpenAI } from "openai";
 import { z } from "zod";
 import { searchWikipedia } from "./tools.js";
 
+// LangChain（JS）核心
+import { tool } from "@langchain/core/tools";
+import { ChatOpenAI } from "@langchain/openai";
+import { createOpenAIToolsAgent, AgentExecutor } from "langchain/agents";
+import { ChatPromptTemplate, MessagesPlaceholder } from "@langchain/core/prompts";
+import { HumanMessage, AIMessage } from "@langchain/core/messages";
+
 const app = express();
 app.use(cors());
 app.use(express.json());
