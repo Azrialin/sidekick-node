@@ -4,12 +4,34 @@
     <meta charset="utf-8" />
     <title>Sidekick Node Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style> body{font-family:system-ui,Segoe UI,Arial;padding:24px;max-width:720px;margin:auto} .msg{margin:8px 0} .ai{background:#f5f5f5;padding:12px;border-radius:8px} </style>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          Segoe UI,
+          Arial;
+        padding: 24px;
+        max-width: 720px;
+        margin: auto;
+      }
+      .msg {
+        margin: 8px 0;
+      }
+      .ai {
+        background: #f5f5f5;
+        padding: 12px;
+        border-radius: 8px;
+      }
+    </style>
   </head>
   <body>
-    <h1>Sidekick Node Demo</h1>
+    <h1>Sidekick Node Demo~~~~</h1>
     <div>
-      <input id="q" placeholder="問點什麼（例如：維基百科查愛因斯坦）" style="width:70%" />
+      <input
+        id="q"
+        placeholder="問點什麼（例如：維基百科查愛因斯坦）"
+        style="width: 70%"
+      />
       <button id="go">送出</button>
     </div>
     <div id="out"></div>
@@ -27,7 +49,10 @@
         q.value = "";
         go.disabled = true;
 
-        out.insertAdjacentHTML("beforeend", `<div class="msg">你：${message}</div>`);
+        out.insertAdjacentHTML(
+          "beforeend",
+          `<div class="msg">你：${message}</div>`,
+        );
 
         // 把目前的 history 一起送到後端
         const res = await fetch("/api/chat", {
@@ -40,8 +65,10 @@
         out.insertAdjacentHTML(
           "beforeend",
           `<div class="msg ai">AI：${data.answer}<div class="dim">tool: ${
-            (data.usedTools && data.usedTools.length) ? data.usedTools.join(", ") : "none"
-          }</div></div>`
+            data.usedTools && data.usedTools.length
+              ? data.usedTools.join(", ")
+              : "none"
+          }</div></div>`,
         );
 
         // 把本輪對話加入 history，下一輪可接續指代
