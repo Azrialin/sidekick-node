@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { fileURLToPath } from "url";
 import express from "express";
 import cors from "cors";
 import { OpenAI } from "openai";
@@ -125,5 +126,9 @@ app.post("/api/chat", async (req, res) => {
     }
 });
 
+export { app };
+
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Sidekick Node server on http://localhost:${port}`));
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    app.listen(port, () => console.log(`Sidekick Node server on http://localhost:${port}`));
+}

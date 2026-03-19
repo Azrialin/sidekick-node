@@ -21,6 +21,9 @@ jobs:
       - name: Install deps
         run: npm ci
 
+      - name: Run tests
+        run: npm test
+
       # 啟動 server（用假金鑰即可，因為我們只打靜態頁）
       - name: Start app
         run: |
